@@ -45,8 +45,6 @@ def generate_story(scenario):
     return story
 
 
-
-
 #text-to-speech
 # Use a pipeline as a high-level helper
 def text_to_speech(text):
@@ -72,20 +70,6 @@ def text_to_speech(text):
     os.system('afplay speech.wav')
 
     return waveform
-
- 
-    
-
-    
-    
-    
-    # text_to_speech = pipeline("text-to-speech", model="facebook/mms-tts-eng")
-    # speech = text_to_speech(text)['audio']
-    # print(speech)
-    # #write speech as .wav file
-    # with open('speech.wav', 'wb') as f:
-    #     f.write(speech)
-    # return speech
 
 
 text_to_speech(generate_story(img2text("Beaches-of-Havelock...-1024x769.jpg")))
