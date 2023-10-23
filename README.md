@@ -4,7 +4,7 @@
 
 - Image Analysis
 - Generate captions alinged for social media
-- Save audo as a `.wav` file in working directory
+- Save audio as a `.wav` file in working directory
 
 ## Installation
 
