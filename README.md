@@ -1,6 +1,6 @@
 # Image Analysis and Captioning for Instagram
 
-## Using HuggingFace's [transformers] library to generate captions for
+## Using HuggingFace's `transformers` library to generate captions for
 
 - Image Analysis
 - Instagram posts
