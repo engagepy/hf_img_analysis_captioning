@@ -3,8 +3,8 @@
 ## Using HuggingFace's `transformers` library for:
 
 - Image Analysis
-- Generate captions alinged for Social Media
-- Save as audo file as a `.wav` in working directory
+- Generate captions alinged for social media
+- Save audo as a `.wav` file in working directory
 
 ## Installation
 
