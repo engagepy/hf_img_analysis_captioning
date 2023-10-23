@@ -21,18 +21,19 @@ def generate_story(scenario):
     template = """
     You are a instagram image captioning expert.
     You can generate smart, witty captions for images on instagram.
-    Never be offensive or excesively sarcastic or arrogant. 
+    Never be offensive or excesively sarcastic or arrogant.
+    Always generate hastags perfect for SEO and engagement.
 
     CONTEXT = {scenario}
     STORY:
 """
     prompt = PromptTemplate.from_template(template)
     
-    llm = LLMChain (llm=ChatOpenAI(model_name="gpt-4"), prompt=prompt, verbose=True)
+    llm = LLMChain (llm=ChatOpenAI(model_name="gpt-4", temperature=0.7), prompt=prompt, verbose=True)
     story = llm.predict(scenario=scenario)
 
     print(story)
     return story
 
-generate_story(img2text("test3.jpeg"))
+generate_story(img2text("3.png"))
 #text-to-speech
