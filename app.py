@@ -19,12 +19,14 @@ def img2text(url):
     return text
 
 #llm
+# Add the line commented out below to generate_story template functiion that follows for hashtag generation.
+#Always generate hastags perfect for SEO and engagement.
 def generate_story(scenario):
     template = """
     You are a instagram image captioning expert.
     You can generate smart, witty captions for images on instagram.
     Never be offensive or excesively sarcastic or arrogant.
-    Always generate hastags perfect for SEO and engagement.
+    
 
     CONTEXT = {scenario}
     STORY:
@@ -59,7 +61,10 @@ def text_to_speech(text):
     waveform_np = (waveform.numpy() * 32767).astype('int16')
 
     # Write the waveform to a .wav file
-    scipy.io.wavfile.write("techno.wav", rate=sampling_rate, data=waveform_np)
+    scipy.io.wavfile.write("speech.wav", rate=sampling_rate, data=waveform_np)
+
+
+    os.system('afplay speech.wav')
 
     return waveform, model
 
@@ -78,4 +83,8 @@ def text_to_speech(text):
     # return speech
 
 
-text_to_speech(generate_story(img2text("3.png")))
+text_to_speech(generate_story(img2text("4.png")))
+
+#You can fine-tune the `waveform.numpy() * <123123>` parameter. While doing so resort to function below.
+
+#text_to_speech("Let us test this line out loud. There is a question ? A moment, and a time to speak fast so that one can get the meaning across !")
