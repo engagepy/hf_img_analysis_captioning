@@ -1,9 +1,10 @@
 # Image Analysis and Captioning for Instagram
 
-## Using HuggingFace's `transformers` library to generate captions for
+## Using HuggingFace's `transformers` library to do:
 
 - Image Analysis
-- Instagram posts
+- Generate captions Social Media
+- Save as audo file `.wav`
 
 ## Installation
 
