@@ -1,11 +1,16 @@
 import os
 from dotenv import load_dotenv, find_dotenv
-from transformers import pipeline, VitsTokenizer, VitsModel, set_seed
+import logging
+from transformers import pipeline, VitsTokenizer, VitsModel, set_seed, logging as transformers_logging
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 import torch
 import scipy
+
+logging.basicConfig(level=logging.ERROR)
+transformers_logging.set_verbosity_error()
+
 load_dotenv(find_dotenv())
 
 # Use a pipeline as a high-level helper
@@ -66,7 +71,7 @@ def text_to_speech(text):
 
     os.system('afplay speech.wav')
 
-    return waveform, model
+    return waveform
 
  
     
@@ -83,7 +88,7 @@ def text_to_speech(text):
     # return speech
 
 
-text_to_speech(generate_story(img2text("4.png")))
+text_to_speech(generate_story(img2text("Beaches-of-Havelock...-1024x769.jpg")))
 
 #You can fine-tune the `waveform.numpy() * <123123>` parameter. While doing so resort to function below.
 
