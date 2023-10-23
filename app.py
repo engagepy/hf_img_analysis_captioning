@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv, find_dotenv
-from transformers import pipeline
+from transformers import pipeline, VitsTokenizer, VitsModel, set_seed
 from langchain.chat_models import ChatOpenAI
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+import torch
+import scipy
 load_dotenv(find_dotenv())
 
 # Use a pipeline as a high-level helper
@@ -35,5 +37,45 @@ def generate_story(scenario):
     print(story)
     return story
 
-generate_story(img2text("3.png"))
+
+
+
 #text-to-speech
+# Use a pipeline as a high-level helper
+def text_to_speech(text):
+    tokenizer = VitsTokenizer.from_pretrained("facebook/mms-tts-eng")
+    model = VitsModel.from_pretrained("facebook/mms-tts-eng")
+
+    inputs = tokenizer(text=text, return_tensors="pt")
+    set_seed(555)  # make deterministic
+
+    with torch.no_grad():
+        outputs = model(**inputs)
+
+    waveform = outputs.waveform[0]
+    sampling_rate = model.config.sampling_rate  # Get the sampling rate from model's configuration
+
+    # Convert tensor to numpy array, rescale it to int16 range, and ensure it's in the right format
+    waveform_np = (waveform.numpy() * 32767).astype('int16')
+
+    # Write the waveform to a .wav file
+    scipy.io.wavfile.write("techno.wav", rate=sampling_rate, data=waveform_np)
+
+    return waveform, model
+
+ 
+    
+
+    
+    
+    
+    # text_to_speech = pipeline("text-to-speech", model="facebook/mms-tts-eng")
+    # speech = text_to_speech(text)['audio']
+    # print(speech)
+    # #write speech as .wav file
+    # with open('speech.wav', 'wb') as f:
+    #     f.write(speech)
+    # return speech
+
+
+text_to_speech(generate_story(img2text("3.png")))
