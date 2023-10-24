@@ -2,5 +2,6 @@ env
 .env
 *.png
 *.jpeg
+*.jpg
 *.wav
 
