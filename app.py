@@ -20,7 +20,7 @@ key_ai = os.getenv("OPAI")
 
 st.set_page_config(page_title="img 2 caption", page_icon="")
 
-@st.cache_resource(show_spinner=True)
+@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
 def use_pipe(task, model_name):
     st.success("Created pipe")
     return pipeline(f"{task}", model=f"{model_name}")
@@ -39,7 +39,7 @@ def img2text(url):
 # Add the line commented out below to generate_story template functiion that follows for hashtag generation.
 #Always generate hastags perfect for SEO and engagement.
 
-@st.cache_resource(show_spinner=True)
+@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
 def use_model_llm(type, model_name:str, _prompt: str):
     st.success("Created Chat Model")
     return LLMChain (llm=type(model_name=f"{model_name}", temperature=0.7), prompt=_prompt, verbose=True)
@@ -68,7 +68,7 @@ def generate_story(scenario):
 #text-to-speech
 # Use a pipeline as a high-level helper
 
-@st.cache_resource(show_spinner=True)
+@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
 def use_token(model_name):
     st.success("Created tokenizer")
     return VitsTokenizer.from_pretrained(f"{model_name}")
@@ -76,7 +76,7 @@ def use_token(model_name):
 use_token_cache_resource = use_token("facebook/mms-tts-eng")
 
 
-@st.cache_resource(show_spinner=True)
+@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
 def use_model(model_name):
     st.success("Created model")
     return VitsModel.from_pretrained(f"{model_name}")
