@@ -18,7 +18,7 @@ key_ai = os.getenv("OPAI")
 
 #img2text
 
-st.set_page_config(page_title="img 2 caption", page_icon="")
+st.set_page_config(page_title="turtl.ai", page_icon="")
 
 @st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
 def use_pipe(task, model_name):
@@ -118,7 +118,7 @@ def main():
     image_file_types = ["jpg", "jpeg", "png"]
 
     
-    st.header("Get Caption from Image")
+    st.header("Ai Image Captioning and Text to Speech by ZP")
     
     uploaded_file = st.file_uploader("Choose an image...", type=image_file_types)
     
