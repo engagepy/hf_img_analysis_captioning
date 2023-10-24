@@ -27,7 +27,7 @@ def use_pipe(task, model_name):
 
 use_pipe_cache_resource = use_pipe("image-to-text", "Salesforce/blip-image-captioning-base")
  #image-to-text, Salesforce/blip-image-captioning-base
-
+@st.cache_data()
 def img2text(url):
     image_to_text = use_pipe_cache_resource
     text = image_to_text(url, max_new_tokens=100)[0]#['generated_text']
@@ -44,7 +44,7 @@ def use_model_llm(type, model_name:str, _prompt: str):
     st.success("Created Chat Model")
     return LLMChain (llm=type(model_name=f"{model_name}", temperature=0.7), prompt=_prompt, verbose=True)
 
-
+@st.cache_data()
 def generate_story(scenario):
     template = """
     You are a instagram image captioning expert.
@@ -83,6 +83,7 @@ def use_model(model_name):
 
 use_model_cache_resource = use_model("facebook/mms-tts-eng")
 
+@st.cache_data()
 def text_to_speech(text):
     tokenizer = use_token_cache_resource
     model = use_model_cache_resource
@@ -144,7 +145,7 @@ def main():
             st.audio(audio_file, format='audio/wav')
 
         #st.success("Run complete [✔") 
-        
+        st.cache_data.clear()
 
 if __name__=='__main__':
     main()
