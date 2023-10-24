@@ -18,15 +18,18 @@ key_ai = os.getenv("OPAI")
 
 #img2text
 
+st.set_page_config(page_title="img 2 caption", page_icon="")
+
 @st.cache_resource(show_spinner=True)
 def use_pipe(task, model_name):
     st.success("Created pipe")
     return pipeline(f"{task}", model=f"{model_name}")
 
+use_pipe_cache_resource = use_pipe("image-to-text", "Salesforce/blip-image-captioning-base")
  #image-to-text, Salesforce/blip-image-captioning-base
 
 def img2text(url):
-    image_to_text = use_pipe("image-to-text", "Salesforce/blip-image-captioning-base")
+    image_to_text = use_pipe_cache_resource
     text = image_to_text(url, max_new_tokens=100)[0]#['generated_text']
     print(text)
     #st.success("Created text")
@@ -70,14 +73,19 @@ def use_token(model_name):
     st.success("Created tokenizer")
     return VitsTokenizer.from_pretrained(f"{model_name}")
 
+use_token_cache_resource = use_token("facebook/mms-tts-eng")
+
+
 @st.cache_resource(show_spinner=True)
 def use_model(model_name):
     st.success("Created model")
     return VitsModel.from_pretrained(f"{model_name}")
 
+use_model_cache_resource = use_model("facebook/mms-tts-eng")
+
 def text_to_speech(text):
-    tokenizer = use_token("facebook/mms-tts-eng")
-    model = use_model("facebook/mms-tts-eng")
+    tokenizer = use_token_cache_resource
+    model = use_model_cache_resource
 
     inputs = tokenizer(text=text, return_tensors="pt")
     set_seed(555)  # make deterministic
@@ -109,7 +117,7 @@ def text_to_speech(text):
 def main():
     image_file_types = ["jpg", "jpeg", "png"]
 
-    st.set_page_config(page_title="img 2 caption", page_icon="")
+    
     st.header("Get Caption from Image")
     
     uploaded_file = st.file_uploader("Choose an image...", type=image_file_types)
