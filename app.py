@@ -16,9 +16,8 @@ load_dotenv(find_dotenv())
 
 key_ai = os.getenv("OPAI")
 
-#img2text
-
 st.set_page_config(page_title="turtl.ai", page_icon="")
+
 hide_streamlit_style = """
             <style>
             [data-testid="stToolbar"] {visibility: hidden !important;}
@@ -26,12 +25,15 @@ hide_streamlit_style = """
             </style>
             """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-@st.cache_resource(show_spinner=True, max_entries=3, ttl=3600)
+
+#img2text begins here
+@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
 def use_pipe(task, model_name):
     #st.success("Created pipe")
     return pipeline(f"{task}", model=f"{model_name}")
 
 use_pipe_cache_resource = use_pipe("image-to-text", "Salesforce/blip-image-captioning-base")
+
  #image-to-text, Salesforce/blip-image-captioning-base
 @st.cache_data()
 def img2text(url):
@@ -45,7 +47,7 @@ def img2text(url):
 # Add the line commented out below to generate_caption template functiion that follows for hashtag generation.
 #Always generate hastags perfect for SEO and engagement.
 
-@st.cache_resource(show_spinner=True, max_entries=1)
+@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
 def use_model_llm(type, model_name:str, _prompt: str):
     #st.success("Image Inference Complete")
     return LLMChain (llm=type(model_name=f"{model_name}", temperature=0.7), prompt=_prompt, verbose=True)
@@ -74,7 +76,7 @@ def generate_caption(scenario):
 #text-to-speech
 # Use a pipeline as a high-level helper
 
-@st.cache_resource(show_spinner=True, max_entries=1)
+@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
 def use_token(model_name):
     #st.success("Created tokenizer")
     return VitsTokenizer.from_pretrained(f"{model_name}")
@@ -82,7 +84,7 @@ def use_token(model_name):
 use_token_cache_resource = use_token("facebook/mms-tts-eng")
 
 
-@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
+@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
 def use_model(model_name):
     st.success("Ai Pipeline, Tokenizer and Model Loaded")
     return VitsModel.from_pretrained(f"{model_name}")
