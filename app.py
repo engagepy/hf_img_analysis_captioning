@@ -24,7 +24,7 @@ HIDE_STREALIT_STYLE = """
             """
 st.markdown(HIDE_STREALIT_STYLE, unsafe_allow_html=True)
 
-@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
+@st.cache_resource(show_spinner=True, ttl=24*3600)
 def use_pipe(task, model_name):
     """#Cache pipe to use in image-to-text"""
     return pipeline(f"{task}", model=f"{model_name}")
@@ -38,10 +38,11 @@ def img2text(url):
     image_to_text = use_pipe_cache_resource
     text = image_to_text(url, max_new_tokens=100)[0]#['generated_text']
     print(text)
+    os.remove(url)
     return text
 
 #llm
-@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
+@st.cache_resource(show_spinner=True,ttl=24*3600)
 def use_model_llm(type, model_name:str, _prompt: str):
     """Cache tokenizer model for use in generate_caption"""
     return LLMChain (llm=type(model_name=f"{model_name}", temperature=0.7), prompt=_prompt, verbose=True)
@@ -66,14 +67,14 @@ def generate_caption(scenario):
 
 #text-to-speech
 
-@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
+@st.cache_resource(show_spinner=True, ttl=24*3600)
 def use_token(model_name):
     """Cache tokenizer for use in text-to-speech"""
     return VitsTokenizer.from_pretrained(f"{model_name}")
 
 use_token_cache_resource = use_token("facebook/mms-tts-eng")
 
-@st.cache_resource(show_spinner=True, max_entries=1, ttl=3600)
+@st.cache_resource(show_spinner=True, ttl=24*3600)
 def use_model(model_name):
     """Cache tokenizer model for use in text-to-speech"""
     st.success("Ai Pipeline, Tokenizer and Model Loaded")
@@ -104,6 +105,7 @@ def text_to_speech(text):
 
 def main():
     """Main function to run the app"""
+    
     image_file_types = ["jpg", "jpeg", "png"]
     st.header("Caption & Text2Speech by ZP")
     uploaded_file = st.file_uploader("Choose an image...", type=image_file_types)
@@ -123,6 +125,5 @@ def main():
         st.audio(audio_file, sample_rate=x)
         st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
         st.cache_data.clear()
-
 if __name__=='__main__':
     main()
