@@ -1,5 +1,7 @@
 # Image Analysis and Captioning for Instagram
 
+[Deployed @ image-cap.streamlit.app](https://image-cap.streamlit.app)
+
 ## Using HuggingFace's `transformers` library for:
 
 - Image Analysis
