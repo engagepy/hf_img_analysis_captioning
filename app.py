@@ -19,7 +19,13 @@ key_ai = os.getenv("OPAI")
 #img2text
 
 st.set_page_config(page_title="turtl.ai", page_icon="")
-
+hide_streamlit_style = """
+            <style>
+            [data-testid="stToolbar"] {visibility: hidden !important;}
+            footer {visibility: hidden !important;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 @st.cache_resource(show_spinner=True, max_entries=3, ttl=3600)
 def use_pipe(task, model_name):
     #st.success("Created pipe")
@@ -56,7 +62,7 @@ def generate_caption(scenario):
     STORY:
 """
     _prompt = PromptTemplate.from_template(template)
-    llm = use_model_llm(ChatOpenAI, "gpt-4", _prompt) #use_model(ChatOpenAI, "gpt-4", prompt)
+    llm = use_model_llm(ChatOpenAI, "gpt-4", _prompt) #use_model(ChatOpenAI, "gpt-3.5-turbo", prompt)
     story = llm.predict(scenario=scenario)
 
     print(story)
@@ -85,6 +91,7 @@ use_model_cache_resource = use_model("facebook/mms-tts-eng")
 
 @st.cache_data()
 def text_to_speech(text):
+
     tokenizer = use_token_cache_resource
     model = use_model_cache_resource
 
@@ -134,7 +141,7 @@ def main():
         text_to_speech(story)
 
         with st.expander("scenario"):
-            st.write(scenario)
+            st.write(scenario["generated_text"])
 
         with st.expander("caption"):
             st.write(story)
