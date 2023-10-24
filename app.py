@@ -20,9 +20,9 @@ key_ai = os.getenv("OPAI")
 
 st.set_page_config(page_title="turtl.ai", page_icon="")
 
-@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
+@st.cache_resource(show_spinner=True, max_entries=3, ttl=3600)
 def use_pipe(task, model_name):
-    st.success("Created pipe")
+    #st.success("Created pipe")
     return pipeline(f"{task}", model=f"{model_name}")
 
 use_pipe_cache_resource = use_pipe("image-to-text", "Salesforce/blip-image-captioning-base")
@@ -36,16 +36,16 @@ def img2text(url):
     return text
 
 #llm
-# Add the line commented out below to generate_story template functiion that follows for hashtag generation.
+# Add the line commented out below to generate_caption template functiion that follows for hashtag generation.
 #Always generate hastags perfect for SEO and engagement.
 
-@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
+@st.cache_resource(show_spinner=True, max_entries=3, ttl=3600)
 def use_model_llm(type, model_name:str, _prompt: str):
-    st.success("Created Chat Model")
+    #st.success("Image Inference Complete")
     return LLMChain (llm=type(model_name=f"{model_name}", temperature=0.7), prompt=_prompt, verbose=True)
 
 @st.cache_data()
-def generate_story(scenario):
+def generate_caption(scenario):
     template = """
     You are a instagram image captioning expert.
     You can generate smart, witty captions for images on instagram.
@@ -68,9 +68,9 @@ def generate_story(scenario):
 #text-to-speech
 # Use a pipeline as a high-level helper
 
-@st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
+@st.cache_resource(show_spinner=True, max_entries=10, ttl=72000)
 def use_token(model_name):
-    st.success("Created tokenizer")
+    #st.success("Created tokenizer")
     return VitsTokenizer.from_pretrained(f"{model_name}")
 
 use_token_cache_resource = use_token("facebook/mms-tts-eng")
@@ -78,7 +78,7 @@ use_token_cache_resource = use_token("facebook/mms-tts-eng")
 
 @st.cache_resource(show_spinner=True, max_entries=10, ttl=3600)
 def use_model(model_name):
-    st.success("Created model")
+    st.success("Ai Pipeline, Tokenizer and Model Loaded")
     return VitsModel.from_pretrained(f"{model_name}")
 
 use_model_cache_resource = use_model("facebook/mms-tts-eng")
@@ -103,13 +103,13 @@ def text_to_speech(text):
     # Write the waveform to a .wav file
     scipy.io.wavfile.write("speech.wav", rate=sampling_rate, data=waveform_np)
 
-    st.success("Created audio") 
+    st.success("Inference Complete [✔") 
     #os.system('afplay speech.wav')
 
     return waveform
 
 
-#text_to_speech(generate_story(img2text("Beaches-of-Havelock...-1024x769.jpg")))
+#text_to_speech(generate_caption(img2text("Beaches-of-Havelock...-1024x769.jpg")))
 
 #You can fine-tune the `waveform.numpy() * <123123>` parameter. While doing so resort to function below.
 
@@ -119,7 +119,7 @@ def main():
     image_file_types = ["jpg", "jpeg", "png"]
 
     
-    st.header("Ai Image Captioning and Text to Speech by ZP")
+    st.header("Img Captioning and Text to Speech by ZP")
     
     uploaded_file = st.file_uploader("Choose an image...", type=image_file_types)
     
@@ -127,10 +127,10 @@ def main():
         bytes_data = uploaded_file.getvalue()
         with open(uploaded_file.name, "wb") as file:
             file.write(bytes_data)
-            st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
+            
         
         scenario = img2text(uploaded_file.name)
-        story = generate_story(scenario)
+        story = generate_caption(scenario)
         text_to_speech(story)
 
         with st.expander("scenario"):
@@ -143,7 +143,7 @@ def main():
 
         if os.path.isfile(audio_file):
             st.audio(audio_file, format='audio/wav')
-
+        st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
         #st.success("Run complete [✔") 
         st.cache_data.clear()
 
