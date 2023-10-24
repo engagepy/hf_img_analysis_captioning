@@ -110,12 +110,12 @@ def text_to_speech(text):
     waveform_np = (waveform.numpy() * 32767).astype('int16')
 
     # Write the waveform to a .wav file
-    scipy.io.wavfile.write("speech.wav", rate=sampling_rate, data=waveform_np)
+    #scipy.io.wavfile.write("speech.wav", rate=sampling_rate, data=waveform_np)
 
     st.success("Inference Complete [✔") 
     #os.system('afplay speech.wav')
 
-    return waveform
+    return waveform_np, sampling_rate
 
 
 #text_to_speech(generate_caption(img2text("Beaches-of-Havelock...-1024x769.jpg")))
@@ -128,7 +128,7 @@ def main():
     image_file_types = ["jpg", "jpeg", "png"]
 
     
-    st.header("Img Captioning and Text to Speech by ZP")
+    st.header("Caption & Text2Speech by ZP")
     
     uploaded_file = st.file_uploader("Choose an image...", type=image_file_types)
     
@@ -140,7 +140,7 @@ def main():
         
         scenario = img2text(uploaded_file.name)
         story = generate_caption(scenario)
-        text_to_speech(story)
+        audio_file, x = text_to_speech(story)
 
         with st.expander("scenario"):
             st.write(scenario["generated_text"])
@@ -148,10 +148,10 @@ def main():
         with st.expander("caption"):
             st.write(story)
     
-        audio_file = 'speech.wav'
-
-        if os.path.isfile(audio_file):
-            st.audio(audio_file, format='audio/wav')
+        #audio_file = 'speech.wav'
+        #if os.path.isfile(audio_file):
+        
+        st.audio(audio_file, sample_rate=x)
         st.image(uploaded_file, caption='Uploaded Image.', use_column_width=True)
         #st.success("Run complete [✔") 
         st.cache_data.clear()
