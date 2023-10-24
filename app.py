@@ -68,7 +68,7 @@ def text_to_speech(text):
     scipy.io.wavfile.write("speech.wav", rate=sampling_rate, data=waveform_np)
 
 
-    os.system('afplay speech.wav')
+    #os.system('afplay speech.wav')
 
     return waveform
 
@@ -102,6 +102,11 @@ def main():
 
         with st.expander("caption"):
             st.write(story)
+    
+        audio_file = 'speech.wav'
+
+        if os.path.isfile(audio_file):
+            st.audio(audio_file, format='audio/wav')
 
 if __name__=='__main__':
     main()
