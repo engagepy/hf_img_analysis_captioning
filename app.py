@@ -18,7 +18,7 @@ key_ai = os.getenv("OPAI")
 
 #img2text
 
-@st.cache_data(show_spinner=True, persist=True)
+@st.cache_resource(show_spinner=True)
 def use_pipe(task, model_name):
     st.success("Created pipe")
     return pipeline(f"{task}", model=f"{model_name}")
@@ -29,14 +29,14 @@ def img2text(url):
     image_to_text = use_pipe("image-to-text", "Salesforce/blip-image-captioning-base")
     text = image_to_text(url, max_new_tokens=100)[0]#['generated_text']
     print(text)
-    st.success("Created text")
+    #st.success("Created text")
     return text
 
 #llm
 # Add the line commented out below to generate_story template functiion that follows for hashtag generation.
 #Always generate hastags perfect for SEO and engagement.
 
-@st.cache_data(show_spinner=True, persist=True)
+@st.cache_resource(show_spinner=True)
 def use_model_llm(type, model_name:str, _prompt: str):
     st.success("Created Chat Model")
     return LLMChain (llm=type(model_name=f"{model_name}", temperature=0.7), prompt=_prompt, verbose=True)
@@ -57,7 +57,7 @@ def generate_story(scenario):
     story = llm.predict(scenario=scenario)
 
     print(story)
-    st.success("Created Story")
+    #st.success("Created Story")
     return story
 
 
@@ -135,7 +135,7 @@ def main():
         if os.path.isfile(audio_file):
             st.audio(audio_file, format='audio/wav')
 
-        st.success("Run complete [✔") 
+        #st.success("Run complete [✔") 
         
 
 if __name__=='__main__':
