@@ -14,19 +14,34 @@ transformers_logging.set_verbosity_error()
 
 load_dotenv(find_dotenv())
 
-# Use a pipeline as a high-level helper
 key_ai = os.getenv("OPAI")
 
 #img2text
+
+@st.cache_data(show_spinner=True, persist=True)
+def use_pipe(task, model_name):
+    st.success("Created pipe")
+    return pipeline(f"{task}", model=f"{model_name}")
+
+ #image-to-text, Salesforce/blip-image-captioning-base
+
 def img2text(url):
-    image_to_text = pipeline("image-to-text", model="Salesforce/blip-image-captioning-base")
+    image_to_text = use_pipe("image-to-text", "Salesforce/blip-image-captioning-base")
     text = image_to_text(url, max_new_tokens=100)[0]#['generated_text']
     print(text)
+    st.success("Created text")
     return text
 
 #llm
 # Add the line commented out below to generate_story template functiion that follows for hashtag generation.
 #Always generate hastags perfect for SEO and engagement.
+
+@st.cache_data(show_spinner=True, persist=True)
+def use_model_llm(type, model_name:str, _prompt: str):
+    st.success("Created Chat Model")
+    return LLMChain (llm=type(model_name=f"{model_name}", temperature=0.7), prompt=_prompt, verbose=True)
+
+
 def generate_story(scenario):
     template = """
     You are a instagram image captioning expert.
@@ -37,20 +52,32 @@ def generate_story(scenario):
     CONTEXT = {scenario}
     STORY:
 """
-    prompt = PromptTemplate.from_template(template)
-    
-    llm = LLMChain (llm=ChatOpenAI(model_name="gpt-4", temperature=0.7), prompt=prompt, verbose=True)
+    _prompt = PromptTemplate.from_template(template)
+    llm = use_model_llm(ChatOpenAI, "gpt-4", _prompt) #use_model(ChatOpenAI, "gpt-4", prompt)
     story = llm.predict(scenario=scenario)
 
     print(story)
+    st.success("Created Story")
     return story
+
 
 
 #text-to-speech
 # Use a pipeline as a high-level helper
+
+@st.cache_resource(show_spinner=True)
+def use_token(model_name):
+    st.success("Created tokenizer")
+    return VitsTokenizer.from_pretrained(f"{model_name}")
+
+@st.cache_resource(show_spinner=True)
+def use_model(model_name):
+    st.success("Created model")
+    return VitsModel.from_pretrained(f"{model_name}")
+
 def text_to_speech(text):
-    tokenizer = VitsTokenizer.from_pretrained("facebook/mms-tts-eng")
-    model = VitsModel.from_pretrained("facebook/mms-tts-eng")
+    tokenizer = use_token("facebook/mms-tts-eng")
+    model = use_model("facebook/mms-tts-eng")
 
     inputs = tokenizer(text=text, return_tensors="pt")
     set_seed(555)  # make deterministic
@@ -67,7 +94,7 @@ def text_to_speech(text):
     # Write the waveform to a .wav file
     scipy.io.wavfile.write("speech.wav", rate=sampling_rate, data=waveform_np)
 
-
+    st.success("Created audio") 
     #os.system('afplay speech.wav')
 
     return waveform
@@ -107,6 +134,9 @@ def main():
 
         if os.path.isfile(audio_file):
             st.audio(audio_file, format='audio/wav')
+
+        st.success("Run complete [✔") 
+        
 
 if __name__=='__main__':
     main()
